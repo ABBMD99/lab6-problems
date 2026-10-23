@@ -1,0 +1,30 @@
+Here is my results:
+
+ArrayList - Random insert/delete: 57,068 ms
+LinkedList - Random insert/delete: 831,904 ms
+ArrayList - Sequential insert/delete (start/end): 82,279 ms
+LinkedList - Sequential insert/delete (start/end): 1,978 ms
+ArrayList - Random access (get): 2,231 ms
+LinkedList - Random access (get): 443,510 ms
+
+
+Explication:
+
+Random insertions and deletions. ArrayList performed better (57 ms vs. 832 ms).
+Both structures are O(n) here, but for different reasons. An ArrayList stores its elements in a contiguous array,
+so inserting or removing in the middle requires shifting about half of the elements, which is done as a fast block memory copy.
+A LinkedList can add or remove a node in O(1), but it first has to traverse up to n/2 nodes to find the index, and each step follows a pointer to a node scattered in memory.
+This traversal costs more than the shifting, so ArrayList wins.
+
+
+Sequential insertions and deletions at the beginning and end.
+LinkedList performed better (2 ms vs. 82 ms). A LinkedList keeps references to its head and tail,
+so addFirst, addLast, removeFirst and removeLast only update a few pointers in O(1), with no traversal or shifting.
+In an ArrayList, operations at the end are fast, but add(0, element) and remove(0) must shift all the elements of the array on every call,
+which is O(n) per operation.
+
+
+Random access with get(index). ArrayList performed much better (2 ms vs. 443 ms).
+An ArrayList is backed by an array, so get(i) reads the position directly in O(1).
+A LinkedList has no index and must walk through the nodes from the nearest end, about n/4 steps on average (25,000 for 100,000 elements), so get(i) is O(n).
+Repeated 10,000 times, this makes it roughly 200 times slower.
